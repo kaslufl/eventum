@@ -9,3 +9,35 @@ datasource db {
   provider = "postgresql"
   url = env("DATABASE_URL")
 }
+
+
+enum Role {
+  superadmin
+  admin
+  coordinator
+  student
+}
+
+model User {
+  id String @id @default(uuid())
+  matricula Int @unique
+  password String @db.VarChar(255)
+  email String @db.VarChar(150)
+  name String @db.VarChar(255)
+  photoUrl String?
+  isActive Boolean
+  role Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastLogin DateTime
+  course Course @relation(fields: [courseId], references: [id])
+  courseId String
+}
+
+model Course {
+  id String @id @default(uuid())
+  name String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  students User[]
+}
